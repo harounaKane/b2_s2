@@ -1,34 +1,93 @@
-<?php 
+<?php
 
-class Livre{
-    private int $numero;
-    private int $nbrePage;
-    private Personne $auteur;
-    private string $editeur;
+    include "classes/Personne.php";
+    include "classes/Biblio.php";
 
-    public function __construct(int $numero, int $page, Personne $auteur, string $editeur){
-        $this->numero = $numero;
-        $this->nbrePage = $page;
-        $this->auteur = $auteur;
-        $this->editeur = $editeur;
+    $pdo = new PDO("mysql:host=127.0.0.1;dbname=b2_biblio", "root", "");
+
+    $res = $pdo->query("SELECT * FROM personne");
+
+    $personnes = [];
+
+    while($r = $res->fetch(PDO::FETCH_ASSOC)){
+        extract($r);
+        $personne = new Personne($id, $prenom, $nom, $age, $ville);
+        $personnes[] = $personne;
     }
 
-public function setNumero(int $numero): void {$this->numero = $numero;}
+    // BIBLIOTHEQUE
+    $res = $pdo->query("SELECT * FROM biblio");
 
-	public function setNbrePage(int $nbrePage): void {$this->nbrePage = $nbrePage;}
+    $biblios = [];
 
-	public function setAuteur(Personne $auteur): void {$this->auteur = $auteur;}
+    while($r = $res->fetch(PDO::FETCH_ASSOC)){
+        extract($r);
+        $biblio = new Biblio($id, $ville);
+        $biblios[] = $biblio;
+    }
 
-	public function setEditeur(string $editeur): void {$this->editeur = $editeur;}
+    if( isset($_POST['editeur']) ){
+        extract($_POST);
 
-	
-   public function getNumero(): int {return $this->numero;}
+        $query = "INSERT INTO livre (nbrePages, auteur, editeur, biblio) VALUES(:pages, :auteur, :editeur, :biblio)";
 
-	public function getNbrePage(): int {return $this->nbrePage;}
+        $stmt = $pdo->prepare($query);
 
-	public function getAuteur(): Personne {return $this->auteur;}
+        $stmt->execute([
+            "pages"    => $nbrePages,
+            "auteur"   => $auteur,
+            "editeur"  => $editeur,
+            "biblio"   => $biblio
+        ]);
+    }
+    
+?>
 
-	public function getEditeur(): string {return $this->editeur;}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
 
-	
-} 
+    <nav>
+        <a href="personne.php">Personne</a>
+        <a href="livre.php">Livre</a>
+        <a href="biblio.php">Bibliothèque</a>
+    </nav>
+
+    <h1>Ajouter un livre</h1>
+
+    <form action="" method="post">
+        <div>
+            <label for="">Nombre de pages</label>
+            <input type="number" name="nbrePages">
+        </div>
+        <div>
+            <label for="">Editeur</label>
+            <input type="text" name="editeur">
+        </div>
+        <div>
+            <label for="">Auteur</label>
+            <select name="auteur" id="">
+                <?php foreach($personnes as $p): ?>
+                    <option value="<?= $p->getId() ?>"> <?= $p->getPrenom() ?> </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div>
+            <label for="">Bibliotèque</label>
+            <select name="biblio" id="">
+                <?php foreach($biblios as $biblio): ?>
+                    <option value="<?= $biblio->getId() ?>">Bibliothèque de :    <?= $biblio->getVille() ?> </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <input type="submit">
+    </form>
+    
+</body>
+</html>

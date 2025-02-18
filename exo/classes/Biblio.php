@@ -2,10 +2,12 @@
 
 
 class Biblio{
+    private int $id;
     private string $ville;
     private array $livres;
 
-    public function __construct(string $ville){
+    public function __construct(int $id, string $ville){
+        $this->id = $id;
         $this->ville = $ville;
         $this->livres = [];
     }
@@ -26,6 +28,8 @@ class Biblio{
         return false;
     }
 
+
+    public function getId(){return $this->id;}
 	
 
     public function getVille(): string {

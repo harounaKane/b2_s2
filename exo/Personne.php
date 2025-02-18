@@ -1,81 +1,43 @@
-
 <?php
 
-class Personne{
+    include "classes/Personne.php";
 
-    //Encapsulation (visibilité: private)
-    private $prenom;
-    private $nom;
-    public $age;
-    private $ville;
+    $pdo = new PDO("mysql:host=127.0.0.1;dbname=b2_biblio", "root", "");
 
-    public function __construct($prenom){
-        $this->prenom = $prenom;
-        // $this->nom = $nom;
-        // $this->age = $age;
-        // $this->ville = $ville;
-    }
+    $res = $pdo->query("SELECT * FROM personne");
 
-
-    public function estMemePrenom(Personne $p){
-        return $this->prenom == $p->prenom;
-    }
-
-    //getter (accesseur)
-
-    public function getPrenom(){
-        return $this->prenom;
-    }
-
-    public function getNom(){
-        return $this->nom;
-    }
-
-    public function getAge(){
-        return $this->age;
-    }
-
-    public function getVille(){
-        return $this->ville;
-    }
-
-
-
-
-    // setter (mutteur)
     
-    public function setPrnom($prenom){
-        $this->prenom = $prenom;
+
+    $personnes = [];
+
+    while($r = $res->fetch(PDO::FETCH_ASSOC)){
+        extract($r);
+        $personne = new Personne($id, $prenom, $nom, $age, $ville);
+        $personnes[] = $personne;
     }
+    
+?>
 
-    public function setNom($nom){
-        $this->nom = $nom;
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
 
-    public function setAge($age){
-        if( is_numeric($age) ){
-            $this->age = $age;
-        }else{
-            $this->age = 0;
-        }
+    <nav>
+        <a href="personne.php">Personne</a>
+        <a href="livre.php">Livre</a>
+        <a href="biblio.php">Bibliothèque</a>
+    </nav>
 
+    <a href="addPerso.php">Ajouter</a>
+    
+    <?php foreach($personnes as $personne): ?>
+        <div> <?= $personne->getPrenom(); ?> </div>
+    <?php endforeach; ?>
 
-    }
-
-    public function setVille($city){
-        $this->ville = $city;
-    }
-
-
-    public function afficher(){
-        return $this->prenom ." ". 
-        $this->nom ." ". 
-        $this->age ." ans Vous êtes de la ville de ". 
-        $this->ville;
-    }
-
-    public function estMajeur(){
-        return $this->age >= 18;
-    }
-}
-
+</body>
+</html>

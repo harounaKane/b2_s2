@@ -1,9 +1,6 @@
 <?php
 
-    include "classes/Personne.php";
-    include "classes/Biblio.php";
-
-    $pdo = new PDO("mysql:host=127.0.0.1;dbname=b2_biblio", "root", "");
+    include 'fonctions.php';
 
     $res = $pdo->query("SELECT * FROM personne");
 
@@ -29,16 +26,33 @@
     if( isset($_POST['editeur']) ){
         extract($_POST);
 
+        extract(getObjet("personne", $auteur));
+        extract(getObjet("biblio", $biblio));
+        
+        $aut = new Personne($id, $prenom, $nom, $age, $ville);
+        $bibl = new Biblio($id, $ville);
+
+        $livre = new Livre(0, $nbrePages, $aut, $editeur, $bibl);
+
         $query = "INSERT INTO livre (nbrePages, auteur, editeur, biblio) VALUES(:pages, :auteur, :editeur, :biblio)";
 
         $stmt = $pdo->prepare($query);
 
         $stmt->execute([
-            "pages"    => $nbrePages,
-            "auteur"   => $auteur,
-            "editeur"  => $editeur,
-            "biblio"   => $biblio
+            "pages"    => $livre->getNbrePage(),
+            "auteur"   => $livre->getAuteur()->getId(),
+            "editeur"  => $livre->getEditeur(),
+            "biblio"   => $livre->getBiblio()->getId()
         ]);
+    }
+
+    function getObjet($table, $id){
+        global $pdo;
+
+        $stmt = $pdo->prepare("SELECT * FROM $table WHERE id = ?");
+        $stmt->execute([$id]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     
 ?>

@@ -1,8 +1,7 @@
 <?php
 
-    include "classes/Personne.php";
+include 'fonctions.php';
 
-    $pdo = new PDO("mysql:host=127.0.0.1;dbname=b2_biblio", "root", "");
 
    if( isset($_POST['prenom']) ){
         extract($_POST);

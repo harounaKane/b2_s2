@@ -9,11 +9,11 @@ class Personne{
     public $age;
     private $ville;
 
-    public function __construct($prenom, $nom, $age, $ville){
+    public function __construct($prenom){
         $this->prenom = $prenom;
-        $this->nom = $nom;
-        $this->age = $age;
-        $this->ville = $ville;
+        // $this->nom = $nom;
+        // $this->age = $age;
+        // $this->ville = $ville;
     }
 
 

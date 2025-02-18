@@ -13,25 +13,22 @@ class Livre{
         $this->editeur = $editeur;
     }
 
+public function setNumero(int $numero): void {$this->numero = $numero;}
 
-    public function getNumero(){
-        return $this->numero;
-    }
+	public function setNbrePage(int $nbrePage): void {$this->nbrePage = $nbrePage;}
 
+	public function setAuteur(Personne $auteur): void {$this->auteur = $auteur;}
 
-    public function setNumero(int $numero){
-        $this->numero = $numero;
-    }
+	public function setEditeur(string $editeur): void {$this->editeur = $editeur;}
 
-    public function  setNbrePage(int $page) {
-        $this->nbrePage = $page;
-    }
+	
+   public function getNumero(): int {return $this->numero;}
 
-    public function setAuteur(Personne $auteur){
-        $this->auteur = $auteur;
-    }
+	public function getNbrePage(): int {return $this->nbrePage;}
 
-    public function setEditeur(string $editeur){
-        $this->editeur = $editeur;
-    }
+	public function getAuteur(): Personne {return $this->auteur;}
+
+	public function getEditeur(): string {return $this->editeur;}
+
+	
 } 
